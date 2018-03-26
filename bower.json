@@ -1,0 +1,21 @@
+{
+  "name": "jonehao",
+  "description": "",
+  "main": "app.js",
+  "authors": [
+    "gonghao"
+  ],
+  "license": "ISC",
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "public/libs",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "^4.0.0"
+  }
+}
