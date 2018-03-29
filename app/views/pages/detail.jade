@@ -13,20 +13,37 @@ block content
               each item in comments
                 li.media
                   .pull-left
-                    img.media-object(src="http://q2.qlogo.cn/g?b=qq&k=IicmNK5WOlXh6at7hTE9nRQ&s=100&t=1500878956&max_age=31536000", style="width: 64px; height: 64px;")
+                    a.comment(href="#comments" data-cid="#{item._id}", data-tid="#{item.from._id}")
+                      img.media-object(src="http://q2.qlogo.cn/g?b=qq&k=IicmNK5WOlXh6at7hTE9nRQ&s=100&t=1500878956&max_age=31536000", style="width: 64px; height: 64px;")
                   .media-body
                     h4.media-heading #{item.from.name}
                     p #{item.content}
+                    if item.reply && item.reply.length>0
+                      each reply in item.reply
+                        .pull-left(style="padding-right:8px")
+                          a.comment(href="#comments" data-cid="#{item._id}", data-tid="#{reply.from._id}")
+                            img.media-object(src="http://q2.qlogo.cn/g?b=qq&k=IicmNK5WOlXh6at7hTE9nRQ&s=100&t=1500878956&max_age=31536000", style="width: 50px; height: 50px;")
+                        .meida-body
+                          h4.media-heading 
+                            | #{reply.from.name}
+                            span.text-info &nbsp;回复&nbsp;
+                            | #{reply.to.name}
+                          p #{reply.content}    
                 hr
-              form(method="POST", action="/user/comment")
-                input(type="hidden", name="comment[movie]", value="#{movie._id}" )
-                .form-group
+              #comments     
+                form#commentForm(method="POST", action="/user/comment")
+                  input(type="hidden", name="comment[movie]", value="#{movie._id}" )
                   if user
                     input(type="hidden", name="comment[from]", value="#{user._id}" )
-                .form-group
-                  textarea.form-control(row="3" name="comment[content]")
-                    //- form表单就是通过name来获取文本框的value的，之所以这里用的是comment[content]是因为bodyparser对其做了对象化，
-                button.btn.btn-primary(type="submit") 提交
+                  .form-group
+                    textarea.form-control(row="3" name="comment[content]")
+                      //- form表单就是通过name来获取文本框的value的，之所以这里用的是comment[content]是因为bodyparser对其做了对象化，
+                  if user    
+                    button.btn.btn-primary(type="submit") 提交
+                   else
+                    //-因为这个模态框是放在header里面的
+                    a.navbar-link(href="#", data-toggle="modal", data-target="#signinModal") 登录后评论
+          
 
       .col-md-5
         dl.dl-horizontal
@@ -42,3 +59,4 @@ block content
           dd= movie.year
           dt 简介
           dd= movie.summary
+  script(src="/js/detail.js")

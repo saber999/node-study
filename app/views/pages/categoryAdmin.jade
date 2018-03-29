@@ -1,0 +1,15 @@
+extends ../layout
+
+block content
+  .container
+    .row
+      form.form-horizontal(method="post", action="/admin/category")
+        //- 隐藏表单域，用来更新电影数据，存储电影ID
+        .form-group
+          label.col-sm-2.control-label(for="inputCategory") 电影分类
+          .col-sm-10
+            //-这里本来的写法是value="#{category.name}"改为如下写法是为了当category.name为undefined的时候，input的值为空
+            input#inputTitle.form-control(type="text", name="category[name]", value=category.name)
+        .form-group
+          .col-sm-offset-2.col-sm-10
+          button.btn.btn-default(type="submit") 录入

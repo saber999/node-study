@@ -2,7 +2,7 @@ var Index = require('../app/controllers/index')
 var User = require('../app/controllers/user')
 var Movie = require('../app/controllers/movie')
 var Comment = require('../app/controllers/comment')
-
+var Category = require('../app/controllers/category.js')
 module.exports = function(app){
 	//pre handle user ,不加路由代表必须经过这个中间件的处理
 	app.use(function(req,res,next) {
@@ -25,10 +25,16 @@ module.exports = function(app){
 	app.get('/movie/:id', Movie.detail)
 	app.get('/admin/movie/new',User.signinRequired,User.adminRequired,Movie.new)
 	app.get('/admin/movie/update/:id',User.signinRequired,User.adminRequired, Movie.update)
-	app.post('/admin/movie', User.signinRequired,User.adminRequired,Movie.save)
+	app.post('/admin/movie/save', User.signinRequired,User.adminRequired,Movie.savePoster,Movie.save)
 	app.get('/admin/movie/list',User.signinRequired,User.adminRequired,Movie.list)
 	app.delete('/admin/movie/list',User.signinRequired,User.adminRequired,Movie.del)
 	//comment
 	app.post('/user/comment', User.signinRequired,Comment.save)
+	//category
+	app.get('/admin/category/new',User.signinRequired,User.adminRequired, Category.new)
+	app.post('/admin/category', User.signinRequired,Category.save)
+	app.get('/admin/category/list',User.signinRequired,User.adminRequired, Category.list)
+	//retults
+	app.get('/results',Index.search)
 
 }

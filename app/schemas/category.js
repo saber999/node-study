@@ -1,26 +1,10 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema
 var ObjectId = Schema.Types.ObjectId
-
-
 //相当于是定义表结构
-var movieSchema = new Schema({
-    title: String,
-    doctor: String,
-    language: String,
-    country: String,
-    summary: String,
-    flash: String,
-    poster: String,
-    year: Number,
-    category: {
-        type: ObjectId,
-        ref: 'Category'
-    },
-    pv: {
-        type: Number,
-        default:0
-    },
+var CategorySchema = new Schema({
+    name:String,
+    movies:[{type:ObjectId, ref:'movie'}],//这里命名type为bojectId的目的是进行populate查询时，就相当于是在Movie中通过_id查找，而_id在mongodb中是唯一的
     // meta 更新或录入数据的时间记录
     meta: {
         createAt: {
@@ -35,7 +19,7 @@ var movieSchema = new Schema({
 });
 
 // movieSchema.pre 表示每次存储数据之前都先调用这个方法,这里的this.isNew暂时没有搞清楚，先记住，这里存数据经常这样处理
-movieSchema.pre('save', function (next) {
+CategorySchema.pre('save', function (next) {
     if (this.isNew) {
         this.meta.createAt = this.meta.updateAt = Date.now();
     } else {
@@ -45,7 +29,7 @@ movieSchema.pre('save', function (next) {
 });
 
 // movieSchema 模式的静态方法
-movieSchema.statics = {
+CategorySchema.statics = {
     fetch: function (cb) {
         return this
             .find({})
@@ -60,5 +44,5 @@ movieSchema.statics = {
 }
 
 // 导出movieSchema模式
-module.exports = movieSchema;
+module.exports = CategorySchema;
 

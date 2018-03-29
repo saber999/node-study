@@ -1,61 +1,112 @@
 module.exports = function(grunt) {
-	//使用grunt的目的是方便开发，免得每次改动文件都需要刷新页面，通过nodemon监听可以当文件改变时重启项目
-	grunt.initConfig({
-		watch: {
-			jade: {
-				files: ['views/**'],
-				options: {
-					livereload: true//文件改动时，重新启动服务
-				}
-			},
-			js:	{
-				files: ['public/js/**', 'models/**/*.js', 'schemas/**/*.js'],
-				//tasks: ['jshint'],
-				options: {
-					livereload: true
-				}
-			}
-		/*	styles: {
-				files: ['resources/css/*.css'],
-				tasks: ['css'],
-				options: {
-					nospawn: true
-				}
-			}*/
 
-		},
-		nodemon: {
-			dev: {
-				options: {
-					file: 'app.js',
-					args: [],
-					ignoredFiles: ['README.md', 'node_modules/**', '.DS_Store'],
-					watchedExtensions: ['js'],
-					/*watchedFolders: ['app', 'config'],//因为暂时还不存在app和config这两个文件夹，所以先直接监听根目录*/
-					watchedFolders: ['./'],
-					debug: true,
-					delayTime: 1,
-					env: {
-					PORT: 3000
-					},
-					cwd: __dirname
-				}
-			}
-		},
-		concurrent: {
-			tasks: ['nodemon', 'watch'],
-			options: {
-				logConcurrentOutput: true
-			}
-		}
+  grunt.initConfig({
+    watch: {
+      jade: {
+        files: ['views/**'],
+        options: {
+          livereload: true
+        }
+      },
+      js: {
+        files: ['public/js/**', 'models/**/*.js', 'schemas/**/*.js'],
+        //tasks: ['jshint'],
+        options: {
+          livereload: true
+        }
+      },
+      uglify: {
+        files: ['public/**/*.js'],
+        tasks: ['jshint'],
+        options: {
+          livereload: true
+        }
+      },
+      styles: {
+        files: ['public/**/*.less'],
+        tasks: ['less'],
+        options: {
+          nospawn: true
+        }
+      }
+    },
 
-	});
+    jshint: {
+      options: {
+        jshintrc: '.jshintrc',
+        ignores: ['public/libs/**/*.js']
+      },
+      all: [ 'test/**/*.js']
+    },
 
-	grunt.option('force', true);
+    less: {
+      development: {
+        options: {
+          compress: true,
+          yuicompress: true,
+          optimization: 2
+        },
+        files: {
+          'public/build/index.css': 'public/less/index.less'
+        }
+      }
+    },
 
-	grunt.loadNpmTasks('grunt-contrib-watch'); // 监听文件变动
-	grunt.loadNpmTasks('grunt-nodemon'); // 监听入口文件
-	grunt.loadNpmTasks('grunt-concurrent'); 
+    uglify: {
+      development: {
+        files: {
+          'public/build/admin.min.js': 'public/js/admin.js',
+          'public/build/detail.min.js': [
+            'public/js/detail.js'
+          ]
+        }
+      }
+    },
 
-	grunt.registerTask('default', ['concurrent']);
-};
+    nodemon: {
+      dev: {
+        options: {
+          file: 'app.js',
+          args: [],
+          ignoredFiles: ['README.md', 'node_modules/**', '.DS_Store'],
+          watchedExtensions: ['js'],
+          watchedFolders: ['./'],
+          debug: true,
+          delayTime: 1,
+          env: {
+            PORT: 3000
+          },
+          cwd: __dirname
+        }
+      }
+    },
+
+    mochaTest: {
+      options: {
+        reporter: 'spec'
+      },
+      src: ['test/**/*.js']
+    },
+
+    concurrent: {
+      tasks: ['nodemon', 'watch', 'less', 'uglify', 'jshint'],
+      options: {
+        logConcurrentOutput: true
+      }
+    }
+  })
+
+  grunt.loadNpmTasks('grunt-contrib-watch')
+  grunt.loadNpmTasks('grunt-nodemon')
+  grunt.loadNpmTasks('grunt-concurrent')
+  grunt.loadNpmTasks('grunt-mocha-test')
+  grunt.loadNpmTasks('grunt-contrib-less')
+  grunt.loadNpmTasks('grunt-contrib-uglify')
+  grunt.loadNpmTasks('grunt-contrib-jshint')
+
+  grunt.option('force', true)
+
+  grunt.registerTask('default', ['concurrent'])
+
+  grunt.registerTask('test', ['mochaTest'])
+}

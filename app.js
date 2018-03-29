@@ -2,11 +2,33 @@ var express =  require('express')//引入express框架
 var port = process.env.PORT || 3000//设置端口号，其中process.env是设置环境端口号，没有设置的情况下就是3000
 var mongoose = require('mongoose')
 var connect =require('connect')
+var fs = require('fs')
 
 var app = express()//node的express框架,启动web服务，由express封装好
 var dburl = 'mongodb://localhost:27017/moive'
 
 mongoose.connect(dburl)
+//models loading通过mongoose.model('user')可以拿到user
+var models_path = __dirname + '/app/models/'
+var walk = function(path) {
+  fs
+    .readdirSync(path)
+    .forEach(function(file) {
+      var newPath = path + '/' + file
+      var stat = fs.statSync(newPath)
+
+      if (stat.isFile()) {
+      	//正则js文件或coffee文件
+        if (/(.*)\.(js|coffee)/.test(file)) {
+          require(newPath)
+        }
+      }
+      else if (stat.isDirectory()) {
+        walk(newPath)//继续遍历
+      }
+    })
+}
+walk(models_path)
 
 app.set('views', './app/views/pages')
 app.set('view engine', 'jade')
@@ -23,7 +45,9 @@ var cookieParser = require('cookie-parser')
 app.use(cookieParser())
 var session = require('express-session')
 var mongoStore = require('connect-mongo')(session)//将session存入数据库
-
+//引入处理文件上传的中间件
+var multipart = require('connect-multiparty')
+app.use(multipart())
 
 app.use(session({
 	secret:'movie',//secret的值建议使用随机字符串

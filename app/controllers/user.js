@@ -18,9 +18,11 @@ exports.signup = function(req,res){
 	// /user/signup/:userid  var userid=req.params.userid
 	// /user/signup/1111?userid=1112  var userid=req.query.userid  var userid=req.body.userid
 	User.find({name:_user.name}, function(err,user){
+		//find查找出的是一个数组，findOne查找出的是一条数据
 		if(err){
 			console.log(err)
 		}
+		console.log(user)
 		if(user.length>0){
 			console.log(user)
 			return res.redirect('/signin')
@@ -30,7 +32,7 @@ exports.signup = function(req,res){
 				if(err){
 					console.log(err)
 				}
-				res.redirect('/admin/userlist')
+				res.redirect('/')
 			})
 		}
 	})	
