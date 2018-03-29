@@ -14,10 +14,10 @@ block content
                   .thumbnail
                     a(href="/movie/#{item._id}")
                       if item.poster.indexOf('http:') > -1 ||item.poster.indexOf('https:') > -1
-                        img(src="#{item.poster}", alt="#{item.title}")
+                        img(src="#{item.poster}", alt="#{item.title}" style="height:180px")
                       else
-                        img(src="/upload/#{item.poster}", alt="#{item.title}")
-                    .caption
-                      h3 #{item.title}
-                      p: a.btn.btn-primary(href="/movie/#{item._id}", role="button") 观看预告片
+                        img(src="/upload/#{item.poster}", alt="#{item.title}" style="height:180px")
+                    .caption.center-block
+                      p.text-center #{item.title}
+                      p.text-center: a.btn.btn-primary(href="/movie/#{item._id}", role="button") 观看预告片
 

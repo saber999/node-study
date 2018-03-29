@@ -1,19 +1,7 @@
-.container
-	.row
-		.page-header.clearfix
-			h1=title
-			.col-md-4
-				small 重度科幻迷
-			.col-md-8
-				form(method="GET",action="/results")
-					.input-group.col-sm-4.pull-right
-						input.form-control(type="text",name="q")
-						span.input-group-btn
-							button.btn.btn-default(type="submit") 搜索
-.navbar.navbar-default.navbar-fixed-bottom
+.navbar.navbar-default.navbar-fixed-header
 	.container
 		.navbar-header
-			a.navbar-brand(href="/") 重度科幻迷
+			a.navbar-brand(href="/") jonehao.top
 		if user
 			p.navbar-text.navbar-right
 				span 欢迎您,#{user.name}
@@ -24,6 +12,16 @@
 				a.navbar-link(href="#", data-toggle="modal", data-target="#signupModal") 注册
 				span &nbsp;|&nbsp;
 				a.navbar-link(href="#", data-toggle="modal", data-target="#signinModal") 登录
+.container
+	.page-header.clearfix
+		div(style="display:inline-block,text-algin:center")
+			form(method="GET",action="/results")
+				
+				.input-group.col-sm-3.pull-right
+					input.form-control(type="text",name="q",placeholder="电影搜索")
+					span.input-group-btn
+						button.btn.btn-default(type="submit") 搜索
+				span(style="line-height:34px;font-size:20px;color:#1987CB;font-weight:bold;float:right;margin-right:30px")=title
 #signupModal.modal.fade
 	.modal-dialog
 		.modal-content
